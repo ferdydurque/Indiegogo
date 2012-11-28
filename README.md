@@ -2,12 +2,14 @@ Indiegogo
 
 Indiegogo is a jQuery plugin to parse the data from the home page of an Indiegogo project.
 
-/* USAGE
+USAGE
 
-// - name:String :: Name of the Indiegogo Project (url segment)
-// - trace:Boolean :: Log the output in the console
-// - onComplete:Function :: return function
-// - return values of object data : data.name, data.percentage, data.goal, data.raised, data.days_left, data.perks
+Options
+name:String :: Name of the Indiegogo Project (url segment)
+trace:Boolean :: Log the output in the console
+Return values
+onComplete:Function :: return function
+return values of object data : data.name, data.percentage, data.goal, data.raised, data.days_left, data.perks
 									
 $(document).ready(function(e) {
 	
@@ -20,7 +22,6 @@ $(document).ready(function(e) {
 	} } );
 
 });
-*/
 
 
-Examples: An example usage page build on popular html5 boilerplate.
+Examples Folder: An example usage page build on popular html5 boilerplate.
