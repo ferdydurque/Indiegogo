@@ -1,26 +1,30 @@
 /*!
- * jQuery lightweight plugin boilerplate
+ * based on jQuery lightweight plugin boilerplate
  * Original author: @ajpiano
  * Further changes, comments: @addyosmani
  * Licensed under the MIT license
  */
-// the semi-colon before the function invocation is a safety
-// net against concatenated scripts and/or other plugins
-// that are not closed properly.
+ 
+/* USAGE
+
+// - name:String :: Name of the Indiegogo Project (url segment)
+// - trace:Boolean :: Log the output in the console
+// - onComplete:Function :: return function
+// - return values of object data : data.name, data.percentage, data.goal, data.raised, data.days_left, data.perks
+									
+$(document).ready(function(e) {
+	
+	$('body').indieGoGo( { name: 'bestie', trace: false, onComplete: function( data ){
+		result = '';
+		for ( var i in data ){
+			result += '>>> ' + i + ' = ' + data[i] + '<br/>';
+		}
+		console.log( result )
+	} } );
+
+});
+*/
 ;(function ( $, window, document, undefined ) {
-
-    // undefined is used here as the undefined global
-    // variable in ECMAScript 3 and is mutable (i.e. it can
-    // be changed by someone else). undefined isn't really
-    // being passed in so we can ensure that its value is
-    // truly undefined. In ES5, undefined can no longer be
-    // modified.
-
-    // window and document are passed through as local
-    // variables rather than as globals, because this (slightly)
-    // quickens the resolution process and can be more
-    // efficiently minified (especially when both are
-    // regularly referenced in your plugin).
 
     // Create the defaults once
     var pluginName = 'indieGoGo',
@@ -31,11 +35,6 @@
     // The actual plugin constructor
     function Plugin( element, options ) {
         this.element = element;
-        // jQuery has an extend method that merges the
-        // contents of two or more objects, storing the
-        // result in the first object. The first object
-        // is generally empty because we don't want to alter
-        // the default options for future instances of the plugin
         this.options = $.extend( {}, defaults, options) ;
         this._defaults = defaults;
         this._name = pluginName;
@@ -47,18 +46,12 @@
 		data : {},
 
         init: function() {
-            // Place initialization logic here
-            // You already have access to the DOM element and
-            // the options via the instance, e.g. this.element
-            // and this.options
-            // you can add more functions like the one below and 
-            // call them like so: this.yourOtherFunction(this.element, this.options).
 			if ( this.options.name ){
 				this.data.name = this.options.name;
 				this.loadData( this.options.name );
 			}
         }, 
-		
+		// load indiegogo project home page via ajax
         loadData: function( projectname) {
 			$.ajax({
 			  url: 'http://www.indiegogo.com/' + projectname,
@@ -68,7 +61,7 @@
 			  }
 			});
         },
-		
+		// parse the data with jquery
 		parseData: function( $aside ){
 			var self = this;
 			// goal
@@ -76,26 +69,24 @@
 			$pfunding.each( function(i,el){
 				if ( $(el).hasClass( 'progress' ) ){
 					// 0.1588 Complete
-					//console.log( $(el).html() );
-					//stripNumber( $(el).html() )
+					// Percentage of money raised/goal
 					self.data.percentage = self.stripNumber( $(el).html() );
 				}
 				else if ( $(el).hasClass( 'money-raised' ) ){
 					if ( $(el).hasClass( 'goal' ) ){
 						//  Raised of $45,000 Goal
-						//console.log( $(el).html() )
+						// total goal
 						self.data.goal = self.stripNumber( $(el).html() );
 					}
 					else{
 						// $7,146
-						//console.log( $(el).find( 'span.amount' ).html() )
-						//stripNumber( $(el).find( 'span.amount' ).html() )
+						// money raised
 						self.data.raised = self.stripNumber( $(el).find( 'span.amount' ).html() );
 					}
 				}
 				else if ( $(el).hasClass( 'days-left' ) ){
 					// 30
-					//console.log( $(el).find( 'span.amount' ).html() )
+					// days left for the money raising
 					self.data.days_left = self.stripNumber( $(el).find( 'span.amount' ).html() );
 				}
 			} );
@@ -104,8 +95,7 @@
 			var nperks = 0;
 			$perks.each( function(i,el){
 				// 9 claimed or 36 out of 200 claimed
-				//console.log( $(el).find( 'p.claimed' ).html() )	// It has to be the sum of all claimed
-				//stripNumber( $(el).find( 'p.claimed' ).html() )
+				// sum of all claimed
 				nperks += parseInt( self.stripNumber( $(el).find( 'p.claimed' ).html() ) );
 			} );
 			this.data.perks = nperks;			
